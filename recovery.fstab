@@ -1,0 +1,36 @@
+# TWRP Optimized Recovery FSTAB for oppo PDVM00
+# Compatible with FBE /data and A/B logical partitions
+# Can be safely used in TWRP 3.7+
+
+# System / Vendor / Product partitions
+system          /system          ext4    ro,barrier=1                            wait,logical,first_stage_mount
+vendor          /vendor          ext4    ro,barrier=1                            wait,logical,first_stage_mount
+product         /product         ext4    ro,barrier=1                            wait,logical,first_stage_mount
+my_product      /my_product      ext4    ro,barrier=1                            wait,logical,first_stage_mount
+my_engineering  /my_engineering  ext4    ro,barrier=1                            wait,logical,first_stage_mount
+
+# Cache and Metadata
+/dev/block/by-name/cache       /cache       ext4    noatime,nosuid,nodev,barrier=1,data=ordered    wait,check,first_stage_mount
+/dev/block/by-name/metadata    /metadata    ext4    noatime,nosuid,nodev,discard                   wait,formattable,first_stage_mount,wrappedkey
+
+# Data partition (FBE)
+/dev/block/bootdevice/by-name/userdata                  /data                  f2fs    noatime,nosuid,nodev,discard,reserve_root=32768,resgid=1065,fsync_mode=nobarrier,inlinecrypt   latemount,wait,resize,check,formattable,fileencryption=ice,wrappedkey,quota,reservedsize=128M,sysfs_path=/sys/devices/platform/soc/1d84000.ufshc,checkpoint=fs
+/dev/block/bootdevice/by-name/userdata                  /data                  ext4    noatime,nosuid,nodev,discard,reserve_root=32768,resgid=1065,fsync_mode=nobarrier,inlinecrypt   latemount,wait,resize,check,formattable,fileencryption=ice,wrappedkey,quota,reservedsize=128M,sysfs_path=/sys/devices/platform/soc/1d84000.ufshc,checkpoint=fs
+
+# Misc
+/dev/block/bootdevice/by-name/misc  /misc   emmc  defaults   defaults
+
+# External storage and OTG
+/dev/block/mmcblk1p1  /external_sd  vfat  nosuid,nodev  defaults
+/dev/block/sdg1        /usb_otg      vfat  nosuid,nodev  defaults
+
+# Optional boot/recovery partitions for completeness
+/dev/block/bootdevice/by-name/boot      /boot       emmc  defaults  defaults
+/dev/block/bootdevice/by-name/recovery  /recovery   emmc  defaults  defaults
+/dev/block/bootdevice/by-name/modem     /modem      emmc  defaults  defaults
+/dev/block/bootdevice/by-name/dsp       /dsp        emmc  defaults  defaults
+/dev/block/bootdevice/by-name/logo      /logo       emmc  defaults  defaults
+/dev/block/bootdevice/by-name/aboot     /aboot      emmc  defaults  defaults
+/dev/block/bootdevice/by-name/abootbak  /abootbak   emmc  defaults  defaults
+/dev/block/bootdevice/by-name/tz        /tz         emmc  defaults  defaults
+/dev/block/bootdevice/by-name/tzbak     /tzbak      emmc  defaults  defaults
