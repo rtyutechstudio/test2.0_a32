@@ -54,11 +54,6 @@ BOARD_USES_QCOM_FBE_DECRYPTION := true
 # Dynamic partitions
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
 
-# Encryption: Setup it
-PRODUCT_PACKAGES += \
-    qcom_decrypt \
-    qcom_decrypt_fbe
-
 PRODUCT_PACKAGES_DEBUG += \
     update_engine_client
 

@@ -1,0 +1,164 @@
+# hxzbaka@gmail.com
+# QCOM CRYPOT FBE FOR TWRP
+# oppo device kernel 4.15-19.x fbe data rc
+
+# init qseecomd env
+    chmod 0660 /dev/qseecom
+    chown system drmrpc /dev/qseecom
+    chmod 0664 /dev/ion
+    chown system system /dev/ion
+
+# service
+service qseecomd /system/bin/qseecomd
+    disabled
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib:/system/lib64:/system/lib:/sbin
+    seclabel u:r:recovery:s0
+
+#ifdef OPLUS_FEATURE_RECOVERY_RESET
+#Yang.Li@ANDROID.UPDATABILITY.1173425, 2017/12/14, Add for FDE in Android O with keymaster3.0
+service keymaster-4-0-qti /system/bin/android.hardware.keymaster@4.0-service-qti
+    class early_hal
+    user system
+    group system drmrpc
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib:/system/lib64:/system/lib:/sbin
+    seclabel u:r:recovery:s0
+    
+service gatekeeper-1-0-qti /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib:/system/lib64:/system/lib:/sbin
+    seclabel u:r:recovery:s0
+
+# oppo_cry_hal
+service hal_cryptoeng_oppo /system/bin/hw/vendor.oplus.hardware.cryptoeng@1.0-service
+    class late_start
+    user system
+    group system input sdcard_rw sdcard_r
+    seclabel u:r:recovery:s0
+
+service gatekeeperd /system/bin/gatekeeperd /data/misc/gatekeeper
+    seclabel u:r:recovery:s0
+
+    
+# TWRP CRYPOT
+on init
+    start servicemanager
+    start hwservicemanager
+    start vndservicemanager
+    setprop vendor.gatekeeper.disable_spu true
+    mkdir /mnt/vendor/persist 0775 system system
+    mount ext4 /dev/block/by-name/persist /mnt/vendor/persist rw
+    
+    
+# && property:hwservicemanager.ready=true is for Oreo+ build trees
+# hwservicemanager doesn't exist in older trees
+
+on property:ro.crypto.type=block && property:ro.crypto.fs_crypto_blkdev=*
+    setprop crypto.ready 0
+    stop qseecomd
+    stop keymaster-4-0-qti
+
+#TWRP FBE
+on property:ro.crypto.state=encrypted && property:ro.crypto.type=file
+    install_keyring
+    symlink /sbin/linker64 /system/bin/linker64
+    start gatekeeper-1-0-qti
+    start keymaster-4-0-qti
+    start hal_cryptoeng_oppo
+    start vold
+    start qseecomd
+    
+on property:hwservicemanager.ready=true
+    write /proc/bootprof "hwservicemanager:ready"
+    start gatekeeper-1-0
+    start keymaster-3-0
+    start hal_cryptoeng_oppo
+
+on property:vendor.sys.listeners.registered=true
+    start gatekeeper-1-0-qti
+
+on property:twrp.all.users.decrypted=true
+    setprop crypto.ready 0
+    stop qseecomd
+    stop gatekeeper-1-0-qti
+    stop keymaster-4-0-qti
+    stop hwservicemanager
+    stop gatekeeperd
+    umount /mnt/vendor/persist
+    
+service keystore_auth /system/bin/keystore_auth
+    oneshot
+    user system
+    group root
+    disabled
+    seclabel u:r:recovery:s0
+
+# keystore is started and stopped on demand by TWRP
+service keystore /system/bin/keystore /tmp/misc/keystore
+    user root
+    group root drmrpc readproc log
+    disabled
+    seclabel u:r:recovery:s0
+
+service vendor.qti.vibrator /system/bin/vendor.qti.hardware.vibrator.service
+    user root
+    group root
+    disabled
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib:/system/lib64:/system/lib:/sbin
+    seclabel u:r:recovery:s0
+    
+#mgr
+service servicemanager /sbin/servicemanager /dev/binder
+    user root
+    group root readproc
+    setenv PATH /sbin:/vendor/bin:/system/bin
+    setenv LD_LIBRARY_PATH /system/lib64:/system/lib:/sbin
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
+
+service hwservicemanager /sbin/hwservicemanager /dev/hwbinder
+    user root
+    group root
+    onrestart setprop hwservicemanager.ready false
+    setenv PATH /sbin:/vendor/bin:/system/bin
+    setenv LD_LIBRARY_PATH /system/lib64:/system/lib:/sbin
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
+
+service vndservicemanager /vendor/bin/vndservicemanager /dev/vndbinder
+    user root
+    group root
+    setenv PATH /sbin:/vendor/bin:/system/bin
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib:/system/lib64:/system/lib:/sbin
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
+    
+service vold /system/bin/vold \
+        --blkid_context=u:r:blkid:s0 --blkid_untrusted_context=u:r:blkid_untrusted:s0 \
+        --fsck_context=u:r:fsck:s0 --fsck_untrusted_context=u:r:fsck_untrusted:s0
+    socket vold stream 0660 root mount
+    socket cryptd stream 0660 root mount
+    setenv PATH /sbin:/vendor/bin:/system/bin
+    setenv LD_LIBRARY_PATH /system/lib64:/system/lib:/sbin
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
+    
+on property:vold.recovery.mediace=*
+  recovery_recursion /data/media/${vold.recovery.mediace}
+
+on property:vold.destory.systemce=*
+  delete_recursion /data/system_ce/${vold.destory.systemce}
+
+on property:vold.destory.miscce=*
+  delete_recursion /data/misc_ce/${vold.destory.miscce}
+
+on property:vold.destory.userce=*
+  delete_recursion /data/user/${vold.destory.userce}
+
+on property:vold.destory.mediace=*
+  delete_recursion /data/media/${vold.destory.mediace}
+
+on property:vold.destory.recyclece=1
+  delete_recursion /data/.recycle
