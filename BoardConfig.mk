@@ -9,7 +9,6 @@ DEVICE_PATH := device/oppo/PDVM00
 
 # For building with minimal manifest
 SOONG_ALLOW_MISSING_DEPENDENCIES := true
-BOARD_SEPOLICY_DIRS += device/oppo/PDVM00/sepolicy
 
 # Architecture
 TARGET_ARCH := arm64

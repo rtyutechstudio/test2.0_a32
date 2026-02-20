@@ -26,3 +26,6 @@
 /external_sd     auto       /dev/block/mmcblk0p1    /dev/block/mmcblk1p1          flags=display="Micro SDcard";storage;wipeingui;removable
 /usb_otg         auto       /dev/block/sda1         /dev/block/sdg1               flags=display="USB OTG";storage;wipeingui;removable
 
+# @hxzbaka UserData Encryption
+# UserData
+/data           ext4            /dev/block/bootdevice/by-name/userdata           flags=fileencryption=ice;wrappedkey;keydirectory=/metadata/vold/metadata_encryption
