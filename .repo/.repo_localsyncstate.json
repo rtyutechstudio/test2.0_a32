@@ -1,0 +1,50 @@
+{
+  "device/qcom/common": {
+    "last_fetch": 1771491455.1797602,
+    "last_checkout": 1771491455.1797602
+  },
+  "device/qcom/twrp-common": {
+    "last_fetch": 1771491455.1797602,
+    "last_checkout": 1771491455.1797602
+  },
+  "build/pesto": {
+    "last_fetch": 1771491455.1797602,
+    "last_checkout": 1771491455.1797602
+  },
+  "bootable/libbootloader": {
+    "last_fetch": 1771491455.1797602,
+    "last_checkout": 1771491455.1797602
+  },
+  "build/bazel": {
+    "last_fetch": 1771491455.1797602,
+    "last_checkout": 1771491455.1797602
+  },
+  "build/blueprint": {
+    "last_fetch": 1771491455.1797602,
+    "last_checkout": 1771491455.1797602
+  },
+  "external/apache-harmony": {
+    "last_fetch": 1771491455.1797602,
+    "last_checkout": 1771491455.1797602
+  },
+  "build/soong": {
+    "last_fetch": 1771491455.1797602,
+    "last_checkout": 1771491455.1797602
+  },
+  "external/avb": {
+    "last_fetch": 1771491455.1797602,
+    "last_checkout": 1771491455.1797602
+  },
+  "external/bazelbuild-rules_android": {
+    "last_fetch": 1771491455.1797602,
+    "last_checkout": 1771491455.1797602
+  },
+  "external/arm-optimized-routines": {
+    "last_fetch": 1771491455.1797602,
+    "last_checkout": 1771491455.1797602
+  },
+  "external/bsdiff": {
+    "last_fetch": 1771491455.1797602,
+    "last_checkout": 1771491455.1797602
+  }
+}

@@ -1,0 +1,20 @@
+ 
+# Allow recovery to use hwservice manager
+allow recovery hal_keymaster_hwservice:hwservice_manager find;
+allow recovery hal_gatekeeper_hwservice:hwservice_manager find;
+
+# Allow recovery to talk to service managers
+allow recovery servicemanager:binder call;
+allow recovery hwservicemanager:binder call;
+
+# Allow keystore services
+allow recovery keystore_service:service_manager { add find };
+allow recovery apc_service:service_manager { add find };
+
+# Allow binder communication
+allow recovery keystore2:binder call;
+
+# Allow device access
+allow recovery keymaster_device:chr_file rw_file_perms;
+allow recovery gatekeeper_device:chr_file rw_file_perms;
+allow recovery qseecom_device:chr_file rw_file_perms;

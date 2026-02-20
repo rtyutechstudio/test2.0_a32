@@ -1,0 +1,14 @@
+{
+  "android_device_qcom_common": 2.8162639141082764,
+  "android_device_qcom_twrp-common": 2.851384162902832,
+  "platform/build/pesto": 3.5804386138916016,
+  "platform/bootable/libbootloader": 3.6337687969207764,
+  "platform/build/bazel": 3.8176214694976807,
+  "platform/build/blueprint": 4.321577787399292,
+  "platform/external/apache-harmony": 4.648508787155151,
+  "android_build_soong": 4.893385887145996,
+  "platform/external/avb": 5.602141380310059,
+  "platform/external/bazelbuild-rules_android": 2.77567195892334,
+  "platform/external/arm-optimized-routines": 6.149292469024658,
+  "platform/external/bsdiff": 3.0247483253479004
+}
