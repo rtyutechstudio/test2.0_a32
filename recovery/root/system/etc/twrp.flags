@@ -28,4 +28,4 @@
 
 # UserData Encryption
 # UserData
-/data           f2fs            /dev/block/bootdevice/by-name/userdata           flags=latemount;wait;resize;check;formattable;fileencryption=ice;wrappedkey;quota;reservedsize=128M
+/data           f2fs            /dev/block/bootdevice/by-name/userdata           flags=wait;resize;check;formattable;fileencryption=ice;wrappedkey;quota
